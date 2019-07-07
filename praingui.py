@@ -49,6 +49,15 @@ class Window(Frame):
         # Execute button
         menu.add_command(Button(self.master, text="Execute", command=self.execute))
 
+    def create_popup(self,mess,err=True):
+        pop = self.master.Toplevel()
+        pop_title = 'Error' if err else 'Warning'
+        pop.title(pop_title)
+        showinfo(pop_title, mess)
+        #Close button
+        b = Button(pop, text='Acknowledged', command=pop.destroy)
+        b.grid(row=1, column=0)
+
     def cut(self):
         self.textarea.event_generate("<<Cut>>")
 
@@ -69,10 +78,13 @@ class Window(Frame):
             file.close()
 
     def saveFile(self):
-        if self.fname != "":
-            fout = open(self.fname,"w+")
-            fout.write(self.textarea.get("1.0",END))
-            fout.close()
+        if self.fname != "" and exists(self.fname):
+            try:
+                fout = open(self.fname,"w+")
+                fout.write(self.textarea.get("1.0",END))
+                fout.close()
+            except Exception e:
+                self.create_popup(mess = 'Failed to save file.')
 
     def execute(self):
         prg = self.textarea.get("1.0",END)

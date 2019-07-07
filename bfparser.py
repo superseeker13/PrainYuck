@@ -44,12 +44,12 @@ def evaluate(prg):
         bugout = open('bf_debug.txt', 'w+')
         bugout.write("Prain Yuck Trace: {}\n".format(str(sys.argv[1::])))
         bugout.write('Compile time: {} \n\n'.format(str(datetime.now())))
-    
+
     num = 0
     prgPos = 0
     memPos = 0
     mem = [0] * (prg.count('>') * 2)
-    
+
     while prgPos < len(prg) - 1:
         # increment the data pointer
         if '>' == prg[prgPos]:
@@ -57,15 +57,15 @@ def evaluate(prg):
         # decrement the data pointer
         elif '<' == prg[prgPos]:
             memPos -= 1
-        # increment the byte at the data pointer.    
-        elif '+' == prg[prgPos]: 
+        # increment the byte at the data pointer.
+        elif '+' == prg[prgPos]:
             mem[memPos] += 1 if mem[memPos] < 255 else -255
-        # decrement the byte at the data pointer.    
+        # decrement the byte at the data pointer.
         elif '-' == prg[prgPos]:
             mem[memPos] -= 1 if mem[memPos] > 0 else -255
-        # output the byte at the data pointer.    
+        # output the byte at the data pointer.
         elif '.' == prg[prgPos]:
-            try: 
+            try:
                 strout = str(chr(mem[memPos]))
                 print(strout, end='')
             except:
@@ -74,13 +74,13 @@ def evaluate(prg):
                 if debug_mode == False:
                     print("Try rerunning in debug mode for trace \n")
                 sys.exit(1)
-                        
-        # Accept one byte of input, 
-        # storing its value in the byte at the data pointer    
+
+        # Accept one byte of input,
+        # storing its value in the byte at the data pointer
         elif ',' == prg[prgPos]:
             mem[memPos] = sys.stdin.read(1)
-            
-        #Beginning of while    
+
+        #Beginning of while
         elif '[' == prg[prgPos]:
             if mem[memPos] == 0 :
                 brace = 1
@@ -90,8 +90,8 @@ def evaluate(prg):
                         brace += 1
                     elif prg[prgPos] == ']':
                         brace -= 1
-        #End of while    
-        elif ']' == prg[prgPos]:          
+        #End of while
+        elif ']' == prg[prgPos]:
             brace = 1
             while brace > 0:
                 prgPos -= 1
@@ -99,11 +99,11 @@ def evaluate(prg):
                     brace -= 1
                 elif prg[prgPos] == ']':
                     brace += 1
-            prgPos -= 1        
+            prgPos -= 1
 
         #Increment program counter
-        prgPos += 1            
-        
+        prgPos += 1
+
         #Output
         if debug_mode:
             try:
@@ -114,27 +114,28 @@ def evaluate(prg):
                 bugout.write('Command: {:4} '.format(str(prg[prgPos])))
                 bugout.write('Mem Contents: {:4} \n'.format(str(mem[memPos])))
             except IndexError as e:
+                print('Command #{:4} \n'.format(str(prgPos)))
                 print('\nRuntime debug error')
                 print ("\tIndexError: index out of range.")
                 sys.exit(1)
     bugout.close()
-                
+
 def cmpl(prg, fname):
-    
+
     #Create c file
     fout = open(fname + ".c", 'w+')
-    
+
     #Set up string
     cstr = "#include <stdio.h>\n"
     cstr += "void main(){\n"
     cstr += "\tchar arr[256] = {0};\n"
     cstr += "\tchar *ptr=arr;\n"
-    
+
     index = 0
     indent = 1
     while index < len(prg):
         cstr += "\t" * indent
-        
+
         # increment the data pointer
         if '>' == prg[index]:
             if prg[index+1] != '>':
@@ -144,8 +145,8 @@ def cmpl(prg, fname):
                 while prg[index+1] == '>':
                     index += 1
                     count += 1
-                cstr += "ptr += {};".format(count) 
-                    
+                cstr += "ptr += {};".format(count)
+
         # decrement the data pointer
         elif '<' == prg[index]:
             if prg[index+1] != '<':
@@ -156,9 +157,9 @@ def cmpl(prg, fname):
                     index += 1
                     count += 1
                 cstr += "ptr -= {};".format(count)
-                
-        # increment the byte at the data pointer.    
-        elif '+' == prg[index]: 
+
+        # increment the byte at the data pointer.
+        elif '+' == prg[index]:
             if prg[index+1] != '+':
                 cstr += "*ptr++;"
             else:
@@ -167,8 +168,8 @@ def cmpl(prg, fname):
                     index += 1
                     count += 1
                 cstr += "*ptr += {};".format(count)
-                
-        # decrement the byte at the data pointer.    
+
+        # decrement the byte at the data pointer.
         elif '-' == prg[index]:
             if prg[index+1] != '-':
                 cstr += "*ptr--;"
@@ -178,36 +179,36 @@ def cmpl(prg, fname):
                     index += 1
                     count += 1
                 cstr += "*ptr -= {};".format(count)
-            
-        # output the byte at the data pointer.    
+
+        # output the byte at the data pointer.
         elif '.' == prg[index]:
             cstr += "printf(\"%c\",*ptr);"
-            
-        # Accept one byte of input, 
-        # storing its value in the byte at the data pointer    
+
+        # Accept one byte of input,
+        # storing its value in the byte at the data pointer
         elif ',' == prg[index]:
             cstr += "*ptr = getchar();"
-            
-        #Beginning of while    
+
+        #Beginning of while
         elif '[' == prg[index]:
             cstr += "while (*ptr) {"
             indent += 1
-            
-        #End of while    
+
+        #End of while
         elif ']' == prg[index]:
             cstr += "}"
             indent -= 1
-            
-        #Add new newline after each command    
+
+        #Add new newline after each command
         cstr += "\n"
         index += 1
-            
+
     #Write and close file
     cstr += "\treturn;\n}"
     fout.write(cstr)
     fout.close()
-    
+
     #Bash gcc compilation
     if not 'Windows' in platform.system():
         os.system("gcc -c " + fname + ".c" + " > cmplout.txt")
-        os.system("gcc -o {} {}.o".format(fname, fname)) 
+        os.system("gcc -o {} {}.o".format(fname, fname))
