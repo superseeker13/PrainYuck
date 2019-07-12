@@ -7,6 +7,7 @@ import os
 import platform
 
 debug_mode = True
+errheader = 'You Prain Yucked up: '
 #Reads in program and checks for syntax errors
 def readinbf(fname):
     if  '.bf' in fname or '.b' in fname:
