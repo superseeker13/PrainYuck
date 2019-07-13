@@ -8,18 +8,20 @@ import platform
 
 debug_mode = True
 errheader = 'You Prain Yucked up: '
-#Reads in program and checks for syntax errors
+# Reads in program and checks for syntax errors
+
+
 def readinbf(fname):
-    if  '.bf' in fname or '.b' in fname:
+    if '.bf' in fname or '.b' in fname:
         try:
             f = open(fname, 'r')
             prg = f.read()
             f.close()
-            #Removes unnessacary characters
-            commands = ['<','>','+','-','.',',','[',']']
+            # Removes unnessacary characters
+            commands = ['<', '>', '+', '-', '.', ',', '[', ']']
             prg = [x for x in prg if x in commands]
             return prg
-        except:
+        except e:
             print('File read error.')
             print('Exiting to shell...')
             sys.exit(1)
@@ -29,7 +31,9 @@ def readinbf(fname):
         print('Exiting to shell...')
         sys.exit(1)
 
-#Check if program is valid
+# Check if program is valid
+
+
 def syncheck(prg):
     lbracket = 0
     rbracket = 0
@@ -39,6 +43,7 @@ def syncheck(prg):
         elif x == ']':
             rbracket += 1
     return lbracket == rbracket
+
 
 def evaluate(prg):
     if debug_mode:
@@ -69,10 +74,10 @@ def evaluate(prg):
             try:
                 strout = str(chr(mem[memPos]))
                 print(strout, end='')
-            except:
+            except e:
                 print('Runtime I/O error.')
                 print("\t" + str(sys.exc_info()[0]))
-                if debug_mode == False:
+                if !debug_mode:
                     print("Try rerunning in debug mode for trace \n")
                 sys.exit(1)
 
@@ -81,9 +86,10 @@ def evaluate(prg):
         elif ',' == prg[prgPos]:
             mem[memPos] = sys.stdin.read(1)
 
-        #Beginning of while
+        # Beginning of while
+
         elif '[' == prg[prgPos]:
-            if mem[memPos] == 0 :
+            if mem[memPos] == 0:
                 brace = 1
                 while brace > 0:
                     prgPos += 1
@@ -91,7 +97,7 @@ def evaluate(prg):
                         brace += 1
                     elif prg[prgPos] == ']':
                         brace -= 1
-        #End of while
+        # End of while
         elif ']' == prg[prgPos]:
             brace = 1
             while brace > 0:
@@ -102,10 +108,10 @@ def evaluate(prg):
                     brace += 1
             prgPos -= 1
 
-        #Increment program counter
+        # Increment program counter
         prgPos += 1
 
-        #Output
+        # Output
         if debug_mode:
             try:
                 num += 1
@@ -121,12 +127,12 @@ def evaluate(prg):
                 sys.exit(1)
     bugout.close()
 
-def cmpl(prg, fname):
 
-    #Create c file
+def cmpl(prg, fname):
+    # Create c file
     fout = open(fname + ".c", 'w+')
 
-    #Set up string
+    # Set up string
     cstr = "#include <stdio.h>\n"
     cstr += "void main(){\n"
     cstr += "\tchar arr[256] = {0};\n"
@@ -190,26 +196,26 @@ def cmpl(prg, fname):
         elif ',' == prg[index]:
             cstr += "*ptr = getchar();"
 
-        #Beginning of while
+        # Beginning of while
         elif '[' == prg[index]:
             cstr += "while (*ptr) {"
             indent += 1
 
-        #End of while
+        # End of while
         elif ']' == prg[index]:
             cstr += "}"
             indent -= 1
 
-        #Add new newline after each command
+        # Add new newline after each command
         cstr += "\n"
         index += 1
 
-    #Write and close file
+    # Write and close file
     cstr += "\treturn;\n}"
     fout.write(cstr)
     fout.close()
 
-    #Bash gcc compilation
-    if not 'Windows' in platform.system():
+    # Bash gcc compilation
+    if 'Windows' not in platform.system():
         os.system("gcc -c " + fname + ".c" + " > cmplout.txt")
         os.system("gcc -o {} {}.o".format(fname, fname))

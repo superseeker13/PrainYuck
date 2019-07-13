@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Basic BF commandline interface
-#TODO: Build Gui
+# TODO: Build Gui
 import sys
 import bfparser as bf
 
-#Causes each comand to be output in detail
+# Causes each comand to be output in detail
 debug_mode = True
-
 errheader = 'You Prain Yucked up: '
-         
+
+
 def main():
     err = False
     if len(sys.argv) == 2:
@@ -22,7 +22,7 @@ def main():
             if bf.syncheck(prog):
                 bf.cmpl(prog, 'PrainTest')
                 sys.exit(0)
-            else:    
+            else:
                 print(str(sys.argv[2]) + ': Syntax error')
                 err = True
         else:
@@ -35,6 +35,7 @@ def main():
         print(errheader + 'Unbalanced brackets')
         err = True
     bf.evaluate(prog) if not err else sys.exit(1)
-    
+
+
 main()
 print()

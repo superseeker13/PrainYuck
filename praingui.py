@@ -1,8 +1,9 @@
-#GUI for PrainYuck
+# GUI for PrainYuck
 from tkinter import *
 from tkinter.messagebox import *
 from tkinter.filedialog import *
 import bfparser as bf
+
 
 class Window(Frame):
 
@@ -11,11 +12,11 @@ class Window(Frame):
         self.master = master
         self.init_window()
 
-        #Set minimum size of window
+        # Set minimum size of window
         master.update()
         master.minsize(400, 400)
 
-    #Creation of init_window
+    # Creation of init_window
     def init_window(self):
         # Changing the title of our master widget
         self.master.title("Untitled - Prain Yuck")
@@ -39,7 +40,7 @@ class Window(Frame):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.master.quit)
 
-        #Edit menu
+        # Edit menu
         editmenu = Menu(menu)
         menu.add_cascade(label='Edit', menu=editmenu)
         editmenu.add_command(label="Cut", command=self.cut)
@@ -47,14 +48,14 @@ class Window(Frame):
         editmenu.add_command(label="Paste", command=self.paste)
 
         # Execute button
-        menu.add_command(Button(self.master, text="Execute", command=self.execute))
+        menu.add_command(Button(self.master, text="Exe", command=self.execute))
 
-    def create_popup(self,mess,err=True):
+    def create_popup(self, mess, err=True):
         pop = self.master.Toplevel()
         pop_title = 'Error' if err else 'Warning'
         pop.title(pop_title)
         showinfo(pop_title, mess)
-        #Close button
+        # Close button
         b = Button(pop, text='Acknowledged', command=pop.destroy)
         b.grid(row=1, column=0)
 
@@ -72,29 +73,31 @@ class Window(Frame):
             # Try to open the file
             # set the window title
             self.master.title(os.path.basename(self.fname))
-            self.textarea.delete(1.0,END)
-            file = open(self.__file,"r")
-            self.textarea.insert(1.0,file.read())
+            self.textarea.delete(1.0, END)
+            file = open(self.__file, "r")
+            self.textarea.insert(1.0, file.read())
             file.close()
 
     def saveFile(self):
         if self.fname != "" and exists(self.fname):
             try:
-                fout = open(self.fname,"w+")
-                fout.write(self.textarea.get("1.0",END))
+                fout = open(self.fname, "w+")
+                fout.write(self.textarea.get("1.0", END))
                 fout.close()
             except Exception e:
-                self.create_popup(mess = 'Failed to save file.')
+                self.create_popup(mess='Failed to save file.')
 
     def execute(self):
-        prg = self.textarea.get("1.0",END)
+        prg = self.textarea.get("1.0", END)
         if bf.syncheck(prg):
             bf.evaluate(prg)
 
     def cmpl(self):
         return
 
-#Creates root Window
+# Creates root Window
+
+
 win = Window()
 print(win)
 mainloop()
