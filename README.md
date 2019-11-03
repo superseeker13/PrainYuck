@@ -1,5 +1,5 @@
 # PrainYuck
-This is a simple BF parser, interpreter and compiler.  A light weight IDE using tkinter is in the works.
+This is a simple BF parser, interpreter and compiler.  A light weight IDE is in the works.
 
 https://en.wikipedia.org/wiki/Brainfuck
 # Brainfuck commands
