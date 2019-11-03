@@ -77,7 +77,7 @@ def evaluate(prg):
             except e:
                 print('Runtime I/O error.')
                 print("\t" + str(sys.exc_info()[0]))
-                if !debug_mode:
+                if not debug_mode:
                     print("Try rerunning in debug mode for trace \n")
                 sys.exit(1)
 
