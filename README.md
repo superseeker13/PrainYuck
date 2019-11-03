@@ -2,7 +2,7 @@
 This is a simple BF parser, interpreter and compiler.  A light weight IDE using tkinter is in the works.
 
 https://en.wikipedia.org/wiki/Brainfuck
-# Brainfuck commands	C equivalent
+# Brainfuck commands
 * \>	increment the data pointer (to point to the next cell to the right).
 * \<	decrement the data pointer (to point to the next cell to the left).
 * \+	increment (increase by one) the byte at the data pointer.
