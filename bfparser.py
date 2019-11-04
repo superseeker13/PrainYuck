@@ -11,7 +11,7 @@ errheader = 'You Prain Yucked up: '
 # Reads in program and checks for syntax errors
 
 
-def readinbf(fname):
+def readinbf(fname) -> str:
     if '.bf' in fname or '.b' in fname:
         try:
             f = open(fname, 'r')
@@ -32,7 +32,6 @@ def readinbf(fname):
         sys.exit(1)
 
 # Check if program is valid
-
 
 def syncheck(prg):
     lbracket = 0
