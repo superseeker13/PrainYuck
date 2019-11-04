@@ -9,7 +9,6 @@ import bfparser as bf
 debug_mode = True
 errheader = 'You Prain Yucked up: '
 
-
 def main():
     err = False
     if len(sys.argv) == 2:
